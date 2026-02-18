@@ -10,3 +10,4 @@ struct Request {
 
     Request() : incoming_IP("0.0.0.0"), outgoing_IP("0.0.0.0"), time_track(0), job_type('p') {}
 };
+#endif
