@@ -2,7 +2,8 @@
 #define Request_H
 #include <string>
 
-struct Request {
+struct Request 
+{
     std::string incoming_IP; // This expresses the incoming IP address of the request
     std::string outgoing_IP; // This expresses the outgoing IP address of the request
     int time_track; // This is to track time for a request to be fully processed
