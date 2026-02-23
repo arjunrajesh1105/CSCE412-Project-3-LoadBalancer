@@ -10,6 +10,7 @@ class IP_Firewall
 
     private:
         string threat_IP_octets[5] = {"73.", "97.", "91.", "23.", "185."}; // This vector contains the beginning octets of dangerous IP addresses that should be blocked
+        int threat_array_count = 5; // This expresses the size of the array of dangerous beginning octets of IP addresses
         int IP_block_count = 0; // This expresses the total number of blocked IP addresses and will update whenever an IP address is blocked
 };
 
