@@ -21,7 +21,7 @@ class Load_Balancer
         queue<Request> req_queue; // This is the queue that contains the requests that haven't been assigned to a server yet
         IP_Firewall firewall_check; // This is the firewall that will help determine if an incoming request is a threat or safe
         int clock_cycle; // This is the variable that will help to keep track of the current clock cycle for the load balancer
-        int requests_finshed;
+        int requests_finished;
         int requests_blocked;
         int rest_period; // This helps to have a rest between adding and removing servers
         void addServer(); // This allows for a server to be added when queue size is more than 80*servers
