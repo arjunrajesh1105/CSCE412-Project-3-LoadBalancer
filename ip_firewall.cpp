@@ -25,11 +25,12 @@ string IP_Firewall::firewallAnalysis(string IP_address)
 
         // This is a check to see there was a match for all the characters in an iteration of the loop above
         // If there was a match then the octet_character_count should be equal to the lenght of the current octet iteration, and if so then it's a threat
-        if (octet_character_count == threat_IP_octets[octet_count].length()){
-            IP_block_count++;
+        if (octet_character_count == threat_IP_octets[octet_count].length())
+        {
             return "dangerous";
         }
         octet_count++;
+        octet_character_count = 0; 
     }
     
     return "safe"; // If no match was found then that means the IP address is safe to be let through
