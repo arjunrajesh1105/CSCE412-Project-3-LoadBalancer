@@ -18,8 +18,16 @@ string Web_Server::handleServer_Request()
         else
         {
             current_request.time_track--;
-            server_status = "busy";
-            request_status = "working";
+            if(current_request.time_track == 0)
+            {
+                server_status = "free";
+                request_status = "done";
+            }
+            else
+            {
+                server_status = "busy";
+                request_status = "working";
+            }
         }
     }
 
