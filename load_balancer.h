@@ -15,6 +15,7 @@ class Load_Balancer
     public:
         Load_Balancer(int server_total); // This is the constructor
         void totalCycleHandle(); // This is the main function that will handle the cycle processing for the load balancer
+        void outputEndingData(); // This outputs the data at the end of the simulation
     
     private:
         vector<Web_Server> web_servers; // This is the vector that contains the web servers that will handle the requests and be managed by the load balancer
@@ -22,12 +23,19 @@ class Load_Balancer
         IP_Firewall firewall_check; // This is the firewall that will help determine if an incoming request is a threat or safe
         int clock_cycle; // This is the variable that will help to keep track of the current clock cycle for the load balancer
         int requests_finished;
+        int requests_allowed;
         int requests_blocked;
         int rest_period; // This helps to have a rest between adding and removing servers
+        int beginning_reqqueue_size;
         void addServer(); // This allows for a server to be added when queue size is more than 80*servers
         void removeServer(); // This allows for a server to be removed when queue size is less than 50*servers
         Request createRandomRequest(); // This creates a random request with random attributes (incoming ip, outgoing ip, time track, and job type)
         string randomIPGenerator(); // This generates a random IP address that can be used for the incoming request (incoming ip and outgoing ip)
+        void addRandomRequest(); // This adds a random request to the request queue at a random time
+        void handleRestPeriod(); // This handles the rest period for adding and removing servers
+        void outputBeginningData(); //This outputs the data at the beginning of the simulation
+        void outputProgressiveData(); // This outputs the data progresively throughout the simulation
+        
 
 };
 
