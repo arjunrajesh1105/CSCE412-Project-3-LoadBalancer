@@ -1,4 +1,3 @@
-#include "request.h"
 #include "load_balancer.h"
 #include <iostream>
 #include <ctime>
@@ -18,6 +17,7 @@ int main()
     cin >> server_input;
     cout << "Please input the amount of clock cycles you would like: " << endl;
     cin >> cycle_input;
+    cout << endl;
     Load_Balancer loadbalancer(server_input);
 
     while (clock_cycle_track < cycle_input)
@@ -25,4 +25,6 @@ int main()
         loadbalancer.totalCycleHandle();
         clock_cycle_track++;
     }
+    
+    loadbalancer.outputEndingData();
 }
