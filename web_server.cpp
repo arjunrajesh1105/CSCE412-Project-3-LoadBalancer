@@ -12,11 +12,11 @@ using std::string;
 
 /**
  * @brief Constructor implementation for Web_Server.
- * @details Initializes a new Web_Server instance with the provided server number,
- *          sets the initial server status to "free" and request status to "working".
- * @param server_number Unique identifier for this server instance
+ * @details Initializes a new Web_Server instance, sets the initial server status
+ *          to "free" and request status to "working".
+ * @param server_number Unique identifier for this server instance (for logging/tracking)
  */
-Web_Server::Web_Server(int server_number) : server_num(server_number), server_status("free"), request_status("working") {}
+Web_Server::Web_Server(int server_number) : server_status("free"), request_status("working") {}
 
 /**
  * @brief Processes the current request for one clock cycle.

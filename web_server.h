@@ -56,16 +56,13 @@ class Web_Server
         
         /**
          * @brief Constructor for Web_Server class.
-         * @details Initializes a new web server with the given server number,
-         *          sets status to "free" and request_status to "working".
-         * @param server_number The unique identifier for this server
+         * @details Initializes a new web server, sets status to "free" and
+         *          request_status to "working".
+         * @param server_number The unique identifier for this server (for logging/tracking)
          */
         Web_Server(int server_number);
 
     private:
-        /** @brief Unique identifier for this server instance */
-        int server_num;
-        
         /** @brief Current operational status of the server ("free" or "busy") */
         string server_status;
         
