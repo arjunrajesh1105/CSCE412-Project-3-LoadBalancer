@@ -1,37 +1,71 @@
+/**
+ * @file ip_firewall.cpp
+ * @brief Implementation of the IP_Firewall class.
+ * @details Contains the implementation of the firewall analysis method that
+ *          detects and blocks requests from dangerous IP addresses.
+ * @author Arjun Rajesh - CSCE 412 Project 3
+ * @date 2026
+ */
+
 #include "ip_firewall.h"
 using std::string;
 
+/**
+ * @brief Analyzes an IP address to determine if it's from a dangerous source.
+ * @details Performs a prefix comparison of the provided IP address against
+ *          known dangerous IP prefixes stored in the threat_IP_octets array.
+ *          Uses character-by-character matching for prefix detection.
+ *
+ *          Algorithm:
+ *          1. Loop through each threat octet prefix in the array
+ *          2. For each threat prefix, compare characters with the IP address
+ *          3. If all characters match the threat prefix length, IP is dangerous
+ *          4. If any character doesn't match, move to the next threat prefix
+ *          5. If no threat prefixes match, the IP is safe
+ *
+ * @param IP_address String representation of the IP address to analyze
+ *                   Expected format: "###.###.###.###" (standard dotted-decimal)
+ * @return String value:
+ *         - "dangerous" if the IP address matches a known threat prefix
+ *         - "safe" if the IP address does not match any threat prefixes
+ *
+ * @example
+ * IP_Firewall firewall;
+ * string result = firewall.firewallAnalysis("73.45.67.89");  // Returns "dangerous"
+ * string result = firewall.firewallAnalysis("192.168.1.1");  // Returns "safe"
+ */
 string IP_Firewall::firewallAnalysis(string IP_address)
 {
-    int octet_count = 0; // This variable is used to keep track of the index of the octet in the threat_IP_octets array
-    int octet_character_count = 0; // This variable is used to keep track of the index of the character of the octet in the threat_IP_octets array and IP_address
+    int octet_count = 0;           /**< Index of the current threat octet being checked */
+    int octet_character_count = 0; /**< Index of the current character being compared */
     
-    // This loop allows for each of the threat octets to be looped through and compared to the incoming IP address
+    // Loop through each threat octet prefix
     while (octet_count < threat_array_count)
     {
-        // This loop allows for each character (number) of the octet to be checked with the IP_address character
-        // If there is a match then the the loop continues to check the next characters and if there isn't a match then the loop breaks and goes to the next octet
+        // Compare each character of the threat prefix with the IP address
         while (threat_IP_octets[octet_count].length() > octet_character_count) 
         {
-            if (IP_address[octet_character_count] == threat_IP_octets[octet_count][octet_character_count]) // Checks the IP_address character and the octer character
+            // Check if characters match
+            if (IP_address[octet_character_count] == threat_IP_octets[octet_count][octet_character_count])
             {
                 octet_character_count++;
             }
             else
             {
-                break; // If no match, then this octet isn't a threat and the loop breaks to check the next octet in the array
+                // No match for this threat prefix, move to next one
+                break;
             }
         }
 
-        // This is a check to see there was a match for all the characters in an iteration of the loop above
-        // If there was a match then the octet_character_count should be equal to the lenght of the current octet iteration, and if so then it's a threat
+        // Check if all characters in this threat prefix matched
         if (octet_character_count == threat_IP_octets[octet_count].length())
         {
-            return "dangerous";
+            return "dangerous"; // IP prefix matches a threat - block it
         }
+        
         octet_count++;
-        octet_character_count = 0; 
+        octet_character_count = 0; // Reset for next threat prefix
     }
     
-    return "safe"; // If no match was found then that means the IP address is safe to be let through
+    return "safe"; // No dangerous prefix match found - allow the request
 }
