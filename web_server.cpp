@@ -93,15 +93,4 @@ void Web_Server::giveRequest(Request curr_request)
     request_status = "working";
     server_status = "busy";
 }
-
-/**
- * @brief Retrieves the unique identification number of this server.
- * @details Each server is assigned a unique number identifier when created.
- *          This is useful for logging and tracking specific servers.
- * @return Integer representing the server's unique ID number
- */
-int Web_Server::returnServerNum() 
-{
-    return server_num;
-}
     

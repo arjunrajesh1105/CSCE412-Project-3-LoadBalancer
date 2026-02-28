@@ -55,12 +55,6 @@ class Web_Server
         void giveRequest(Request curr_request);
         
         /**
-         * @brief Retrieves the server's unique identification number.
-         * @return Integer representing the server number/ID
-         */
-        int returnServerNum();
-        
-        /**
          * @brief Constructor for Web_Server class.
          * @details Initializes a new web server with the given server number,
          *          sets status to "free" and request_status to "working".
