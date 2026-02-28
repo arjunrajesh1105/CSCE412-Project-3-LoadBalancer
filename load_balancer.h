@@ -30,6 +30,7 @@ class Load_Balancer
         int requests_blocked;
         int rest_period; // This helps to have a rest between adding and removing servers
         int beginning_reqqueue_size;
+        int beginning_server_size;
         int max_servers; // This is the max amount of servers that were present during the simulation
         int p_jobtype_total; // This is the total amount of p job type requests that were created during the simulation
         int s_jobtype_total; // This is the total amount of s job type requests that were created during the simulation

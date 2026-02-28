@@ -13,7 +13,7 @@ using std::to_string;
 #define bold "\033[1m"
 #define reset "\033[0m"
 
-Load_Balancer::Load_Balancer(int server_total) : clock_cycle(0), requests_finished(0), requests_allowed(0), requests_blocked(0), rest_period(0), beginning_reqqueue_size(server_total * 100), max_servers(server_total), p_jobtype_total(0), s_jobtype_total(0), servers_added(0), servers_removed(0), randomRequestSuccesfulAdded(0), randomRequestFailedAdded(0)
+Load_Balancer::Load_Balancer(int server_total) : clock_cycle(0), requests_finished(0), requests_allowed(0), requests_blocked(0), rest_period(0), beginning_reqqueue_size(server_total * 100), beginning_server_size(server_total),max_servers(server_total), p_jobtype_total(0), s_jobtype_total(0), servers_added(0), servers_removed(0), randomRequestSuccesfulAdded(0), randomRequestFailedAdded(0)
 {
     log.open("load_balancer_log.txt");
     int server_track = 0;
@@ -26,6 +26,7 @@ Load_Balancer::Load_Balancer(int server_total) : clock_cycle(0), requests_finish
     max_servers = server_total;
 
     beginning_reqqueue_size = server_total * 100;
+    beginning_server_size = server_total;
     int request_track = 0;
     while (request_track < (server_total * 100))
     {
@@ -96,7 +97,6 @@ void Load_Balancer::addServer()
 
 void Load_Balancer::removeServer()
 {
-    //if (web_servers.size() <= 1) return;
     int last_index = web_servers.size() - 1;
     web_servers.pop_back();
     servers_removed++;
@@ -195,6 +195,7 @@ void Load_Balancer::outputBeginningData()
 
 void Load_Balancer::outputProgressiveData()
 {
+    float requestSuccessfulAdded = randomRequestSuccesfulAdded;
     if (clock_cycle % 500 == 0)
     {
         cout << blue << bold << "PROGRESSIVE OUTPUT UPDATE" << reset << endl;
@@ -208,7 +209,7 @@ void Load_Balancer::outputProgressiveData()
         cout << green << "Requests finished: " << requests_finished << reset << endl;
         cout << red << "Requests blocked: " << requests_blocked << reset << endl;
         cout << yellow << "Random requests successfully added to queue: " << randomRequestSuccesfulAdded << reset << endl;
-        cout << yellow << "Random requests added percentage: " << ((randomRequestSuccesfulAdded * 100) / clock_cycle) << "%" << reset << endl;
+        cout << yellow << "Random requests added percentage: " << ((requestSuccessfulAdded * 100) / clock_cycle) << "%" << reset << endl;
         cout << endl;
     }
 
@@ -225,37 +226,43 @@ void Load_Balancer::outputProgressiveData()
         log << "Requests finished: " << requests_finished << endl;
         log << "Requests blocked: " << requests_blocked << endl;
         log << "Random requests successfully added to queue: " << randomRequestSuccesfulAdded << endl;
-        log << "Random requests added percentage: " << ((randomRequestSuccesfulAdded * 100) / clock_cycle) << "%" << endl;
+        log << "Random requests added percentage: " << ((requestSuccessfulAdded * 100) / clock_cycle) << "%" << endl;
         log << endl;
     }
 }
 
 void Load_Balancer::outputEndingData()
 {
+    float requestSuccessfulAdded = randomRequestSuccesfulAdded;
+
     cout << blue << bold << "FINAL OUTPUT SUMMARY" << reset << endl;
     cout << blue << "------------------------------" << reset << endl;
     cout << endl;
     cout << orange << "Total clock cycles: " << clock_cycle << reset << endl;
     cout << green << "Total requests finished: " << requests_finished << reset << endl;
+    cout << "Starting queue size: " << beginning_reqqueue_size << endl;
+    cout << "Starting amount of servers: " << beginning_server_size << endl;
     cout << "Requests remaining in queue: " << req_queue.size() << endl;
-    cout << "Total active servers: " << totalActiveServers() << endl;
-    cout << "Total inactive servers: " << totalInactiveServers() << endl;
-    cout << "Max servers during the simulation: " << max_servers << endl;
+    cout << "Final server amount: " << web_servers.size() << endl;
+    cout << "Final active servers: " << totalActiveServers() << endl;
+    cout << "Final inactive servers: " << totalInactiveServers() << endl;
+    cout << "Max servers during simulation: " << max_servers << endl;
     cout << yellow << "Total servers added: " << servers_added << reset << endl;
     cout << yellow << "Total servers removed: " << servers_removed << reset << endl;
     cout << red << "Total requests blocked by firewall: " << requests_blocked << reset << endl;
     cout << green << "Total requests allowed through firewall: " << requests_allowed << reset << endl;
-    cout << "Total p job type requests created: " << p_jobtype_total << endl;
-    cout << "Total s job type requests created: " << s_jobtype_total << endl;
+    cout << "Ratio of p to s job types: " << p_jobtype_total << ":" << s_jobtype_total << endl;
     cout << yellow << "Total requests randomly added to the queue: " << randomRequestSuccesfulAdded << reset << endl;
     cout << yellow << "Total requests that failed to be randomly added to the queue: " << randomRequestFailedAdded << endl;
-    cout << yellow << "Random requests added percentage: " << ((randomRequestSuccesfulAdded * 100) / clock_cycle) << "%" << reset << endl;
+    cout << yellow << "Random requests added percentage: " << ((requestSuccessfulAdded * 100) / clock_cycle) << "%" << reset << endl;
 
     log << "FINAL OUTPUT SUMMARY" << endl;
     log << "------------------------------" << endl;
     log << endl;
     log << "Total clock cycles: " << clock_cycle << endl;
     log << "Total requests finished: " << requests_finished << endl;
+    log << "Starting queue size: " << beginning_reqqueue_size << endl;
+    log << "Starting amount of servers: " << beginning_server_size << endl;
     log << "Requests remaining in queue: " << req_queue.size() << endl;
     log << "Final server amount: " << web_servers.size() << endl;
     log << "Final active servers: " << totalActiveServers() << endl;
@@ -265,11 +272,10 @@ void Load_Balancer::outputEndingData()
     log << "Total servers removed: " << servers_removed << endl;
     log << "Total requests blocked by firewall: " << requests_blocked << endl;
     log << "Total requests allowed through firewall: " << requests_allowed << endl;
-    log << "Total p job type requests created: " << p_jobtype_total << endl;
-    log << "Total s job type requests created: " << s_jobtype_total << endl;
+    log << "Ratio of p to s job types: " << p_jobtype_total << ":" << s_jobtype_total << endl;
     log << "Total requests randomly added to the queue: " << randomRequestSuccesfulAdded << endl;
     log << "Total requests that failed to be randomly added to the queue: " << randomRequestFailedAdded << endl;
-    log << "Random requests added percentage: " << ((randomRequestSuccesfulAdded * 100) / clock_cycle) << "%" << endl;
+    log << "Random requests added percentage: " << ((requestSuccessfulAdded * 100) / clock_cycle) << "%" << endl;
 
 }
 
